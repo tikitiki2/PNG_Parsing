@@ -5,8 +5,7 @@ import func
 # main
 # get file path check if file path is provided
 file_path=input('enter file path: ')
-tempe=func.find(file_path,'D:')
-print(tempe)
+
 if not file_path:
     print('no input file is provided')
     exit(1)
