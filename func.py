@@ -3,7 +3,10 @@ import struct
 def read_chunk(file):
     # read the length of the next chunk
     length_bytes = file.read(4)
+    
     length = int.from_bytes(length_bytes, byteorder='big')
+    
+    #this print returns 2303741511 which is the size of the file it should be a much lower number for each chunk
     # read the chunk type
     chunk_type = file.read(4)
     # read the chunk data
@@ -12,14 +15,19 @@ def read_chunk(file):
     crc_bytes = file.read(4)
     crc = int.from_bytes(crc_bytes, byteorder='big')
     # return the chunk type and data size
+    
     return chunk_type, length,chunk_data,crc_bytes
-
-def save_chunks(file):
+import time
+def save_chunks(file,file_path):
+    validate(file_path)
+    file.seek(8)
     chunks = []
-    # read all bytes in file and save to a list so that we can now acces all the bytes and write into them
     while True:
         chunk_type, size, chunk_data, crc = read_chunk(file)
 
+        if not chunk_type:
+            break
+        
         chunk = {
             'length': size,
             'type': chunk_type,
@@ -27,13 +35,12 @@ def save_chunks(file):
             'crc': crc,
         }
         chunks.append(chunk)
-        if chunk_type == b'IEND':
-            break
+
     return chunks
 
 
-def validate():
-    file_path=input('enter file path: ')
+
+def validate(file_path):
 
     if not file_path:
         print('no input file is provided')
@@ -52,8 +59,10 @@ def validate():
     sig=file.read(8)
 
     if list(sig)!=png_sig:
+        print(f'the sig provided was {list(sig)}')
         print(f'{input_file} is not a valid png or is corrupted')
         exit(1)
+    file.close()
     print('file accepted')
-    return file
+    return file_path
     
