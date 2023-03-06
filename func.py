@@ -30,9 +30,30 @@ def save_chunks(file):
         if chunk_type == b'IEND':
             break
     return chunks
-import os
 
-def find(name, path):
-    for root, dirs, files in os.walk(path):
-        if name in files:
-            return os.path.join(root, name)
+
+def validate():
+    file_path=input('enter file path: ')
+
+    if not file_path:
+        print('no input file is provided')
+        exit(1)
+
+    input_file=file_path
+    #try to open the file and catch any errors while doing so
+    try:
+        file=open(input_file,'rb+')
+    except Exception as e :
+        print('error occured while trying to open file path: ', e)
+        exit(1)
+
+    # read header to check if it is png type
+    png_sig=[137, 80, 78, 71, 13, 10, 26, 10]
+    sig=file.read(8)
+
+    if list(sig)!=png_sig:
+        print(f'{input_file} is not a valid png or is corrupted')
+        exit(1)
+    print('file accepted')
+    return file
+    
