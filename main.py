@@ -5,6 +5,7 @@ import func
 # get file path check if file path is provided
 file_path=input('enter file path: ')
 func.validate(file_path)
+func.check_end(file_path)
 file=open(file_path,'rb+')
 #go to end of file
 file.seek(0,2)
@@ -18,10 +19,12 @@ temp=' '+secret
 #create a new chunk to add
 try:
     compressed=temp.encode('utf-8')
+    print('after utf8 encoding: ',compressed)
     length=len(compressed)
     type=b'sec'
     crc=zlib.crc32(type+compressed).to_bytes(4,byteorder='big')
     new_chunk = length.to_bytes(4, byteorder='big') + type + compressed + crc
+    print('new chunk: ',new_chunk)
 except Exception as e:
     print(e)
 #write to end of file

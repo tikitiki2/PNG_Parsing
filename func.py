@@ -6,7 +6,6 @@ def read_chunk(file):
     
     length = int.from_bytes(length_bytes, byteorder='big')
     
-    #this print returns 2303741511 which is the size of the file it should be a much lower number for each chunk
     # read the chunk type
     chunk_type = file.read(4)
     # read the chunk data
@@ -66,3 +65,11 @@ def validate(file_path):
     print('file accepted')
     return file_path
     
+def check_end(file_path):
+    with open(file_path,'rb') as file:
+        chunks=save_chunks(file,file_path)
+        if chunks[-1]['type']!=b'IEND':
+            print('there is already a chunk/secret message at the end of this file please use find_secret.py to uncover it')
+            exit(1)
+        
+
